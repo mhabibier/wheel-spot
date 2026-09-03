@@ -330,32 +330,36 @@ export default function MapPage() {
                   {/* Arrows ← */}
                   <Arrows dir="left" count={3} />
 
-                  {/* MIDDLE SECTION */}
-                  <div style={{ display: 'flex', gap: 0, alignItems: 'stretch' }}>
+                  {/* MIDDLE SECTION: [Left col] [road] [island: RowA+wall+RowB] [road] [Right col] */}
+                  <div style={{ display: 'flex', alignItems: 'stretch', background: ROAD_BG, borderRadius: 6 }}>
 
-                    {/* Left column */}
+                    {/* Left column slots */}
                     <div style={{
-                      background: ROAD_BG, borderRadius: '6px 0 0 6px',
                       padding: '8px 6px', display: 'flex', flexDirection: 'column',
                       gap: 4, flexShrink: 0, justifyContent: 'flex-start',
                     }}>
                       {renderZone('zLeft')}
                     </div>
 
-                    {/* Center */}
+                    {/* Left road lane (circular traffic flows here, up/down) */}
+                    <div style={{ flex: '0 0 52px' }} />
+
+                    {/* CENTER ISLAND: Row A + yellow wall + Row B */}
+                    {/* Yellow only spans the island width, NOT the road lanes */}
                     <div style={{
-                      flex: 1, background: ROAD_BG, padding: '10px 8px',
-                      display: 'flex', flexDirection: 'column', gap: 0,
+                      flex: 1, display: 'flex', flexDirection: 'column',
+                      justifyContent: 'flex-start', padding: '10px 0',
                     }}>
                       {/* Row A */}
                       <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
                         {renderZone('zRowA')}
                       </div>
 
-                      {/* Yellow wall / center divider — full width */}
+                      {/* Yellow center WALL — only spans island, road on left/right is open */}
                       <div style={{
                         height: 12, background: '#E6B31E', borderRadius: 2,
-                        margin: '6px -8px', flexShrink: 0,
+                        margin: '6px 0', flexShrink: 0,
+                        /* No negative margin — stays within island bounds */
                       }} />
 
                       {/* Row B */}
@@ -363,13 +367,15 @@ export default function MapPage() {
                         {renderZone('zRowB')}
                       </div>
 
-                      {/* Road space for circular traffic */}
-                      <div style={{ height: 60 }} />
+                      {/* Road space below island for circular loop bottom */}
+                      <div style={{ flex: 1, minHeight: 60 }} />
                     </div>
 
-                    {/* Right column */}
+                    {/* Right road lane */}
+                    <div style={{ flex: '0 0 52px' }} />
+
+                    {/* Right column slots */}
                     <div style={{
-                      background: ROAD_BG, borderRadius: '0 6px 6px 0',
                       padding: '8px 6px', display: 'flex', flexDirection: 'column',
                       gap: 4, flexShrink: 0, justifyContent: 'flex-start',
                     }}>
