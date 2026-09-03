@@ -57,7 +57,7 @@ function CarDropdown({ value, onChange }) {
               ref={inputRef}
               className="input"
               style={{ padding: '8px 12px', fontSize: 13 }}
-              placeholder="🔍 Cari jenis mobil…"
+              placeholder="Cari jenis mobil…"
               value={q}
               onChange={e => setQ(e.target.value)}
             />
@@ -158,35 +158,18 @@ export default function EditProfilePage() {
                     </span>
                 }
               </div>
-              {/* Camera badge */}
+              {/* Camera badge — hidden, click avatar to upload */}
               <button type="button"
                 onClick={() => photoRef.current?.click()}
-                style={{
-                  position: 'absolute', bottom: 0, right: 0,
-                  width: 26, height: 26, borderRadius: '50%',
-                  background: 'var(--red)', border: '2px solid #fff',
-                  cursor: 'pointer', display: 'grid', placeItems: 'center',
-                }}
+                style={{ position: 'absolute', inset: 0, borderRadius: '50%', background: 'transparent', border: 'none', cursor: 'pointer' }}
                 aria-label="Ubah foto profil"
-              >
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                  <circle cx="12" cy="13" r="4"/>
-                </svg>
-              </button>
+              />
               <input ref={photoRef} type="file" accept="image/*" hidden onChange={handlePhotoChange} />
             </div>
 
             <div>
               <p style={{ fontWeight: 800, fontSize: 16 }}>{form.fname} {form.lname}</p>
               <p style={{ fontSize: 13, color: 'var(--muted)', marginTop: 4 }}>{form.email}</p>
-              <button type="button"
-                onClick={() => photoRef.current?.click()}
-                className="btn btn--ghost"
-                style={{ marginTop: 10, padding: '7px 14px', fontSize: 12 }}
-              >
-                📷 Ganti Foto
-              </button>
             </div>
           </div>
 
@@ -248,7 +231,7 @@ export default function EditProfilePage() {
 
           {/* ── Actions ── */}
           <div className="form-actions">
-            <button className="btn btn--lg" type="submit">💾 Simpan Perubahan</button>
+            <button className="btn btn--lg" type="submit">Simpan Perubahan</button>
             <Link className="btn btn--ghost btn--lg" href="/profile">Batal</Link>
           </div>
 
