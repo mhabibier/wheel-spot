@@ -204,7 +204,7 @@ export default function MapPage() {
 
           <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 14, alignItems: 'center' }}>
             <input className="input" style={{ maxWidth: 200 }}
-              placeholder="🔍 Cari nomor slot…" inputMode="numeric"
+              placeholder="Cari nomor slot…" inputMode="numeric"
               value={search} onChange={e => setSearch(e.target.value.replace(/\D/g, ''))} />
             <div className="filter-chips">
               {FILTERS.map(([id, lbl]) => (

@@ -10,13 +10,15 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }) {
-  const loc = getLocation(params.id);
+  const { id } = await params;
+  const loc = getLocation(id);
   if (!loc) return {};
   return { title: `Parkiran ${loc.name} — Wheel Spot` };
 }
 
-export default function LocationPage({ params }) {
-  const loc = getLocation(params.id);
+export default async function LocationPage({ params }) {
+  const { id } = await params;
+  const loc = getLocation(id);
   if (!loc) notFound();
 
   const statusMap = {
@@ -62,8 +64,8 @@ export default function LocationPage({ params }) {
                 {loc.address}
               </p>
               <div className="stack gap-2 mt-3" style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-                <span className="chip">📅 Real-time</span>
-                <span className="chip">🕒 14:30 WIB</span>
+                <span className="chip">Real-time</span>
+                <span className="chip">14:30 WIB</span>
               </div>
             </div>
 
@@ -79,7 +81,7 @@ export default function LocationPage({ params }) {
               </p>
             </div>
 
-            <Link className="btn btn--lg btn--block" href="/map">📍 Lihat Denah Parkir</Link>
+            <Link className="btn btn--lg btn--block" href="/map">Lihat Denah Parkir</Link>
 
             {s.alert && (
               <div className="alert danger">
