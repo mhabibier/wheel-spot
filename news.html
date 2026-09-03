@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Parking Updates — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="news.html">
+        <span class="logo"><img src="assets/LOGO_FIX%20copy2.png" alt="Wheel Spot"></span>
+        Wheel Spot
+      </a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container stack gap-4" style="padding-top:20px">
+
+    <div class="page-head">
+      <h1>Live Parking Updates</h1>
+      <p>Real-time status alerts untuk fasilitas parkir utama.</p>
+    </div>
+
+    <div class="segmented">
+      <a class="on" href="news.html">Updates</a>
+      <a href="ratings.html">Ratings</a>
+      <a href="contact.html">Hubungi Kami</a>
+    </div>
+
+    <input class="input" placeholder="🔍 Cari berita atau lokasi…" data-filter-input="#newsList">
+
+    <div id="newsList" class="grid" style="grid-template-columns:repeat(3,1fr)">
+
+      <a class="card card-hover news-card full" data-filter-item href="location.html?loc=paskal">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge danger badge--plain">FULL</span><span class="tiny muted">10:30 AM</span>
+        </div>
+        <h3>Paskal 23 Parking Alert</h3>
+        <p class="loc">📍 Paskal Hyper Square</p>
+        <p class="small muted mt-2">Fasilitas parkir utama Paskal 23 telah mencapai kapasitas maksimum pada pukul 10.30 pagi. Harap antisipasi keterlambatan di pintu masuk.</p>
+      </a>
+
+      <a class="card card-hover news-card almost" data-filter-item href="location.html?loc=ciwalk">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge warn badge--plain">ALMOST FULL</span><span class="tiny muted">15 mins ago</span>
+        </div>
+        <h3>Ciwalk Capacity Limit Approaching</h3>
+        <p class="loc">📍 Cihampelas Walk</p>
+        <p class="small muted mt-2">Hanya tersisa 8 ruang parkir di lantai atas utama. Area dek atas ini sudah dibatasi.</p>
+      </a>
+
+      <a class="card card-hover news-card avail" data-filter-item href="location.html?loc=miko">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span class="badge ok badge--plain">AVAILABLE</span><span class="tiny muted">1 hr ago</span>
+        </div>
+        <h3>Ample Space at Miko Mall</h3>
+        <p class="loc">📍 Miko Mall Kopo</p>
+        <p class="small muted mt-2">Kabar baik bagi pengendara ke arah selatan. Miko Mall saat ini melaporkan lebih dari 200 tempat parkir di seluruh zona.</p>
+      </a>
+
+    </div>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

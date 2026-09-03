@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daftar — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<main class="auth">
+  <section class="auth__brand">
+    <span class="logo logo--lg"><img src="assets/LOGO_FIX%20copy2.png" alt="Wheel Spot"></span>
+    <div>
+      <h1>Wheel Spot</h1>
+      <p>Buat akun untuk mulai booking slot parkir dan memantau ketersediaan real-time.</p>
+    </div>
+  </section>
+
+  <section class="auth__panel">
+    <form class="auth__card stack gap-4" data-fake data-msg="Akun berhasil dibuat. Mengalihkan…" data-go="home.html">
+      <h2>Create Account</h2>
+
+      <div class="field">
+        <label class="label" for="nama">Nama Lengkap <span class="req">*</span></label>
+        <input class="input" id="nama" type="text" required autocomplete="name">
+      </div>
+      <div class="field">
+        <label class="label" for="email">Email <span class="req">*</span></label>
+        <input class="input" id="email" type="email" required autocomplete="email">
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="label" for="pass">Password <span class="req">*</span></label>
+          <input class="input" id="pass" type="password" required autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label class="label" for="pass2">Konfirmasi Password <span class="req">*</span></label>
+          <input class="input" id="pass2" type="password" required autocomplete="new-password">
+        </div>
+        <div class="field">
+          <label class="label" for="telp">Nomor Telepon <span class="req">*</span></label>
+          <input class="input" id="telp" type="tel" required autocomplete="tel" placeholder="08xx xxxx xxxx">
+        </div>
+        <div class="field">
+          <label class="label" for="plat">Nomor Kendaraan <span class="req">*</span></label>
+          <input class="input" id="plat" type="text" required placeholder="B 1234 SPOT" style="text-transform:uppercase">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="label" for="jenis">Jenis Kendaraan <span class="req">*</span></label>
+        <select class="select" id="jenis" required>
+          <option value="" selected disabled>Pilih Jenis</option>
+          <option>Mobil (Passenger Car)</option>
+          <option>Motor</option>
+          <option>SUV / MPV</option>
+          <option>Mobil Listrik (EV)</option>
+        </select>
+      </div>
+
+      <button class="btn btn--block btn--lg" type="submit">Register Account</button>
+      <p class="auth__foot">Sudah punya akun? <a href="login.html">Log in disini</a></p>
+    </form>
+  </section>
+</main>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Home — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="home.html">
+        <span class="logo"><img src="assets/LOGO_FIX%20copy2.png" alt="Wheel Spot"></span>
+        Wheel Spot
+      </a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container stack gap-8" style="padding-top:20px">
+
+    <section class="hero">
+      <h1>Cek Slot Parkir Kosong dengan Cepat di Wheel Spot</h1>
+      <p class="muted mt-2">Data ketersediaan diperbarui langsung dari gate tiap lokasi.</p>
+      <div class="hero__actions">
+        <a class="btn" href="find.html">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 21s7-6.2 7-11a7 7 0 1 0-14 0c0 4.8 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+          Cek Lokasi
+        </a>
+        <a class="btn btn--ghost" href="map.html">Lihat Slot</a>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Ringkasan Sistem</h2>
+      <div class="stat-row">
+        <div class="stat"><div class="stat__label">Total Lokasi</div><div class="stat__value">12</div></div>
+        <div class="stat"><div class="stat__label">Slot Tersedia</div><div class="stat__value ok">428</div></div>
+        <div class="stat"><div class="stat__label">Slot Terisi</div><div class="stat__value red">1.890</div></div>
+        <div class="stat"><div class="stat__label">Update Terakhir</div><div class="stat__value" style="font-size:19px">Baru saja</div></div>
+        <div class="stat"><div class="stat__label">Akurasi</div><div class="stat__value">99%</div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Lokasi Pantauan</h2>
+      <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+        <a class="card card-hover loc-card" href="location.html?loc=miko">
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="9" cy="9" r="1.6"/></svg></div>
+          <div><h3>Miko Mall</h3><p class="tiny muted">Jl. Kopo No.599, Cirangrang, Babakan Ciparay</p></div>
+          <div class="loc-meta"><span>Tersedia<b class="ok">45</b></span><span>Kapasitas<b>200</b></span></div>
+        </a>
+        <a class="card card-hover loc-card" href="location.html?loc=ciwalk">
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="9" cy="9" r="1.6"/></svg></div>
+          <div><h3>Ciwalk</h3><p class="tiny muted">Jl. Cihampelas No.160, Cipaganti</p></div>
+          <div class="loc-meta"><span>Tersedia<b class="ok">2</b></span><span>Kapasitas<b>350</b></span></div>
+        </a>
+        <a class="card card-hover loc-card" href="location.html?loc=paskal">
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="9" cy="9" r="1.6"/></svg></div>
+          <div><h3>Paskal</h3><p class="tiny muted">Jl. Pasir Kaliki No.25-27, Kb. Jeruk</p></div>
+          <div class="loc-meta"><span>Tersedia<b class="ok">15</b></span><span>Kapasitas<b>500</b></span></div>
+        </a>
+        <a class="card card-hover loc-card" href="location.html?loc=bip">
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/><circle cx="9" cy="9" r="1.6"/></svg></div>
+          <div><h3>BIP</h3><p class="tiny muted">Jl. Merdeka No.56, Braga</p></div>
+          <div class="loc-meta"><span>Tersedia<b class="ok">30</b></span><span>Kapasitas<b>400</b></span></div>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

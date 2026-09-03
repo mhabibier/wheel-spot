@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lokasi Parkir — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="find.html">Lokasi Parkir</a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:20px">
+    <div class="split-side">
+
+      <aside class="card stack gap-4">
+        <h2 class="card-title" style="font-size:15px;display:flex;align-items:center;gap:8px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 5h18M6 12h12M10 19h4"/></svg>
+          Filter Pencarian
+        </h2>
+        <div class="field">
+          <label class="label" for="q">Nama Lokasi</label>
+          <input class="input" id="q" placeholder="Cari nama/gedung…" data-filter-input="#locResults">
+        </div>
+        <div class="field">
+          <label class="label" for="st">Status</label>
+          <select class="select" id="st"><option>Semua Status</option><option>Tersedia</option><option>Hampir Penuh</option><option>Penuh</option></select>
+        </div>
+        <div class="field">
+          <label class="label" for="rt">Rating Minimum</label>
+          <select class="select" id="rt"><option>Semua Rating</option><option>4.5+</option><option>4.0+</option><option>3.0+</option></select>
+        </div>
+        <div class="field">
+          <label class="label" for="mn">Slot Kosong Minimal</label>
+          <input class="input" id="mn" type="number" min="0" placeholder="Contoh: 10">
+        </div>
+        <button class="btn btn--block" data-toast="Filter diterapkan — 3 lokasi cocok." data-toast-kind="ok">Terapkan Filter</button>
+      </aside>
+
+      <div id="locResults" class="grid" style="grid-template-columns:repeat(3,1fr)">
+
+        <article class="card card-hover loc-card" data-filter-item>
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/></svg></div>
+          <span class="badge ok" style="align-self:flex-start">Tersedia</span>
+          <div><h3>Miko Mall</h3><p class="tiny muted">Jl. Kopo No.599, Bandung</p></div>
+          <div class="loc-meta"><span>Kosong<b class="ok">35</b></span><span>Total<b>165</b></span></div>
+          <a class="btn btn--block" href="location.html?loc=miko">Cek Slot</a>
+        </article>
+
+        <article class="card card-hover loc-card" data-filter-item>
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/></svg></div>
+          <span class="badge warn" style="align-self:flex-start">Hampir Penuh</span>
+          <div><h3>Ciwalk</h3><p class="tiny muted">Jl. Cihampelas No.160</p></div>
+          <div class="loc-meta"><span>Kosong<b class="warn">8</b></span><span>Total<b>292</b></span></div>
+          <a class="btn btn--block" href="location.html?loc=ciwalk">Cek Slot</a>
+        </article>
+
+        <article class="card card-hover loc-card" data-filter-item>
+          <div class="thumb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="m3 15 5-5 4 4 3-3 6 6"/></svg></div>
+          <span class="badge danger" style="align-self:flex-start">Penuh</span>
+          <div><h3>Paskal</h3><p class="tiny muted">Jl. Pasir Kaliki No.25-27</p></div>
+          <div class="loc-meta"><span>Kosong<b class="danger">0</b></span><span>Total<b>450</b></span></div>
+          <a class="btn btn--block" href="location.html?loc=paskal">Cek Slot</a>
+        </article>
+
+      </div>
+    </div>
+
+    <p class="center mt-6"><a class="linkbtn" href="find-history.html">Lihat Riwayat Pengecekan Ketersediaan →</a></p>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

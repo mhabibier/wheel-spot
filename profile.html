@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Profil — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="profile.html">Profile Overview</a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:22px">
+    <div class="split-side">
+
+      <aside class="card center stack gap-3">
+        <span class="avatar" style="width:96px;height:96px;font-size:28px;margin-inline:auto">WS</span>
+        <div>
+          <h2 style="font-size:18px">Wheel Spot User</h2>
+          <span class="badge danger badge--plain mt-2" style="background:var(--red-tint);color:var(--red)">★ Pro Member</span>
+          <p class="tiny muted mt-2">Joined 15 October 2023</p>
+        </div>
+        <a class="btn btn--ghost btn--block" href="edit-profile.html">✎ Edit Profile</a>
+        <button class="btn btn--ghost btn--block" data-toast="Link ubah password dikirim ke email kamu." data-toast-kind="ok">⟳ Ubah Password</button>
+        <a class="btn btn--block" href="login.html" data-confirm="Keluar dari akun?">⏻ Logout</a>
+      </aside>
+
+      <div class="stack gap-4">
+        <div class="card">
+          <p style="font-weight:800">👤 Contact Details</p>
+          <div class="datalist mt-2">
+            <div><span class="k">Email Address</span><span class="v">user@wheelspot.id</span></div>
+            <div><span class="k">Phone Number</span><span class="v">+62 812-3456-7890</span></div>
+          </div>
+        </div>
+        <div class="card">
+          <p style="font-weight:800">🚗 Registered Vehicle</p>
+          <div class="datalist mt-2">
+            <div><span class="k">Jenis Kendaraan</span><span class="v">Mobil (Passenger Car)</span></div>
+            <div><span class="k">No Kendaraan (Plat)</span><span class="v">B 1234 SPOT</span></div>
+          </div>
+        </div>
+        <div class="card card--tint">
+          <p style="font-weight:800">Sesi Parkir Aktif</p>
+          <p class="small muted mt-2">Miko Mall — Slot A1 · berjalan 01:24:10</p>
+          <a class="btn btn--outline btn--block mt-3" href="dashboard.html?state=valid">Buka Dashboard Sesi →</a>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

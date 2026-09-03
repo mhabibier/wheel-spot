@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Struk Parkir — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app" id="receipt" style="padding-bottom:40px">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="dashboard.html?state=valid">Struk Parkir</a>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top:32px;max-width:520px">
+
+    <!-- shared header -->
+    <div class="center" data-receipt="failed">
+      <div class="receipt-icon err"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 7v7"/><circle cx="12" cy="17.5" r=".6" fill="currentColor"/></svg></div>
+      <h1 style="color:var(--red);margin-top:14px">Pembayaran Gagal</h1>
+      <p class="muted small mt-2">Saldo e-Toll tidak mencukupi. Gate belum terbuka — silakan pilih metode pembayaran lain.</p>
+    </div>
+    <div class="center" data-receipt="success">
+      <div class="receipt-icon ok"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></div>
+      <h1 style="color:var(--ok);margin-top:14px">Transaksi Selesai</h1>
+      <p class="muted small mt-2">Gate telah terbuka. Terima kasih sudah parkir bersama Wheel Spot.</p>
+    </div>
+
+    <!-- receipt body (shared) -->
+    <div class="card mt-6">
+      <div class="datalist">
+        <div><span class="k">Lokasi</span><span class="v">Parkiran Miko Mall</span></div>
+        <div><span class="k">Nomor Slot</span><span class="v">A1</span></div>
+        <div><span class="k">Waktu Masuk</span><span class="v">24 Okt 2023, 13:06</span></div>
+        <div><span class="k">Waktu Keluar</span><span class="v">24 Okt 2023, 14:30</span></div>
+        <div><span class="k">Durasi Parkir</span><span class="v">1 jam 24 menit</span></div>
+      </div>
+      <div class="datalist mt-2">
+        <div><span class="k">Tarif Normal</span><span class="v">Rp 7.000</span></div>
+        <div><span class="k">Denda (Salah Slot)</span><span class="v accent">Rp 5.000</span></div>
+      </div>
+      <div class="datalist mt-2">
+        <div><span class="k" style="font-weight:800;color:var(--ink)">Total Dibayar</span><span class="v accent" style="font-size:16px">Rp 12.000</span></div>
+        <div><span class="k">Metode Pembayaran</span><span class="v">e-Toll</span></div>
+      </div>
+    </div>
+
+    <!-- actions -->
+    <div class="stack gap-3 mt-6" data-receipt="failed">
+      <button class="btn btn--lg btn--block" data-receipt-go="success">Coba Metode Lain →</button>
+      <a class="linkbtn center" href="contact.html">Hubungi Petugas</a>
+    </div>
+    <div class="stack gap-3 mt-6" data-receipt="success">
+      <a class="btn btn--lg btn--block" href="home.html">Kembali ke Home</a>
+      <button class="linkbtn center" data-print>Unduh Struk (PDF)</button>
+    </div>
+  </main>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

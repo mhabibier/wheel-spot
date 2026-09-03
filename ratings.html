@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Location Ratings — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="news.html">Location Ratings</a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container stack gap-4" style="padding-top:20px">
+
+    <div class="segmented">
+      <a href="news.html">Updates</a>
+      <a class="on" href="ratings.html">Ratings</a>
+      <a href="contact.html">Hubungi Kami</a>
+    </div>
+
+    <div class="split-side">
+
+      <form class="card stack gap-4" data-fake data-msg="Review kamu terkirim. Terima kasih!">
+        <h2 class="card-title" style="font-size:16px">📝 Submit a Review</h2>
+        <div class="field">
+          <label class="label" for="loc">Select Location</label>
+          <select class="select" id="loc" required>
+            <option value="" selected disabled>Choose a parking facility…</option>
+            <option>Miko Mall</option><option>Ciwalk</option><option>Paskal</option><option>BIP</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="label">Rating</label>
+          <div class="star-input" data-value="0" aria-label="Beri rating bintang">
+            <button type="button" aria-label="1 bintang"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></button>
+            <button type="button" aria-label="2 bintang"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></button>
+            <button type="button" aria-label="3 bintang"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></button>
+            <button type="button" aria-label="4 bintang"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></button>
+            <button type="button" aria-label="5 bintang"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></button>
+          </div>
+          <input type="hidden" name="rating" value="0">
+        </div>
+        <div class="field">
+          <label class="label" for="cmt">Comment</label>
+          <textarea class="textarea" id="cmt" placeholder="Describe your parking experience…" required></textarea>
+        </div>
+        <button class="btn btn--block" type="submit">➤ Kirim Review</button>
+      </form>
+
+      <div>
+        <h2 class="section-title">Recent Reviews</h2>
+        <div class="stack gap-3">
+          <article class="card">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="avatar" style="background:#bcd">JD</span>
+              <div><p style="font-weight:800">John Doe <span class="tiny muted">· Ciwalk</span></p>
+                <span class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></span>
+              </div>
+            </div>
+            <p class="small mt-3">Fasilitas parkir sangat baik. Tata letaknya logis dan saya cepat dapat tempat meski jam ramai.</p>
+          </article>
+          <article class="card">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="avatar" style="background:#cbd">AS</span>
+              <div><p style="font-weight:800">Aria Stark <span class="tiny muted">· Paskal</span></p>
+                <span class="stars"><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="currentColor"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m12 2 3 6.9 7.5.6-5.7 4.9 1.8 7.3L12 17.8 5.4 21.7l1.8-7.3L1.5 9.5 9 8.9z"/></svg></span>
+              </div>
+            </div>
+            <p class="small mt-3">Ruang parkir agak sempit untuk SUV besar di lantai bawah.</p>
+          </article>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

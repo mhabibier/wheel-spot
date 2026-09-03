@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Parking Map — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <button class="iconbtn" data-menu-toggle="#miniMenu" aria-label="Menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <a class="topbar__title" href="home.html">
+        <span class="logo"><img src="assets/LOGO_FIX%20copy2.png" alt="Wheel Spot"></span>
+        Wheel Spot
+      </a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+    <div id="miniMenu" class="hidden container" style="padding-bottom:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <a class="btn btn--ghost" href="home.html">Home</a>
+      <a class="btn btn--ghost" href="find.html">Cari Lokasi</a>
+      <a class="btn btn--ghost" href="dashboard.html?state=valid">Sesi Parkir Saya</a>
+    </div>
+  </header>
+
+  <main class="container stack gap-4" style="padding-top:20px">
+
+    <div class="hero" style="padding:22px">
+      <h1 style="font-size:22px">Live Parking Map</h1>
+      <p class="muted small mt-2">Level B1 · Main Facility</p>
+      <input id="mapSearch" class="input mt-3" placeholder="🔍 Cari nomor slot…" inputmode="numeric">
+      <p class="overline mt-4">Filters</p>
+      <div id="mapFilters" class="filter-chips mt-2">
+        <button class="on" data-filter="all">All Spots</button>
+        <button data-filter="available">Available</button>
+        <button data-filter="occupied">Occupied</button>
+        <button data-filter="ev">EV Charging</button>
+        <button data-filter="accessible">Accessible</button>
+      </div>
+    </div>
+
+    <div class="card card--tint" style="display:flex;justify-content:space-around;text-align:center">
+      <div><p style="font-size:26px;font-weight:800;color:var(--ok)" id="mapAvail">42</p><p class="overline">Available</p></div>
+      <div><p style="font-size:26px;font-weight:800;color:var(--red)" id="mapOcc">108</p><p class="overline">Occupied</p></div>
+    </div>
+
+    <div id="slotInfo" class="card" style="border-color:var(--red-tint-2)">
+      <p style="font-weight:800" data-slot-name>Slot 12</p>
+      <p class="mt-2"><span class="badge danger" data-slot-badge>Occupied</span></p>
+      <p class="small muted mt-2" data-slot-note>Standard car size. Not equipped with EV charging.</p>
+      <a class="btn btn--block mt-3 hidden" data-slot-action href="dashboard.html?state=menuju">Booking Slot Ini →</a>
+    </div>
+
+    <div class="pmap-wrap">
+      <div class="zoombar">
+        <button id="zoomIn" type="button" aria-label="Perbesar">+</button>
+        <button id="zoomOut" type="button" aria-label="Perkecil">−</button>
+        <button id="zoomReset" type="button" aria-label="Atur ulang tampilan">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
+        </button>
+      </div>
+      <span class="zoom-hint">Ctrl + scroll untuk zoom · drag untuk geser</span>
+
+      <div class="pmap-viewport" id="pmapViewport">
+        <div class="pmap" id="pmap">
+
+          <!-- pedestrian access to the mall, cut through the building wall -->
+          <div class="pmap__mallwall">
+            <span class="pdoor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 21V4H6v17M14 8h4v13M10 12h.01"/></svg>
+              PINTU MASUK MALL
+            </span>
+            <span class="pdoor">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 21V4h8v17M10 8H6v13M14 12h-.01"/></svg>
+              PINTU KELUAR MALL
+            </span>
+          </div>
+
+          <!-- parking field: edge rows wrap a road ring around the centre island -->
+          <div class="pmap__field">
+
+            <div class="pmap__row"><div class="pbay" id="zTop"></div></div>
+
+            <div class="pmap__ring">
+              <div class="pmap__side" id="zLeft"></div>
+
+              <div class="ring">
+                <div class="ring__island">
+                  <div class="pbay" id="zRowA"></div>
+                  <div class="pisland"></div>
+                  <div class="pbay" id="zRowB"></div>
+                </div>
+                <!-- one-way traffic, clockwise -->
+                <span class="rarrow t" style="left:30%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg></span>
+                <span class="rarrow t" style="left:50%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg></span>
+                <span class="rarrow t" style="left:70%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m10 6 6 6-6 6"/></svg></span>
+                <span class="rarrow r" style="top:50%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 10 6 6 6-6"/></svg></span>
+                <span class="rarrow b" style="left:30%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span>
+                <span class="rarrow b" style="left:50%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span>
+                <span class="rarrow b" style="left:70%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"/></svg></span>
+                <span class="rarrow l" style="top:50%"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m18 14-6-6-6 6"/></svg></span>
+              </div>
+
+              <div class="pmap__side" id="zRight"></div>
+            </div>
+
+            <div class="pmap__row pmap__row--core">
+              <div class="plift"><i></i></div>
+              <div class="pbay" id="zBottom"></div>
+            </div>
+          </div>
+
+          <!-- bottom boundary wall: thick dark green, with clear empty gaps at both ends -->
+          <div class="greenwall">
+            <span class="gap"></span><span class="seg"></span><span class="gap"></span>
+          </div>
+
+          <!-- vehicle gates aligned under the wall openings -->
+          <div class="pmap__gates">
+            <div class="pgate exit">
+              <span class="pgate__arm"></span>
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M6 13l6 6 6-6"/></svg>
+                KELUAR KENDARAAN
+              </span>
+            </div>
+            <div class="pgate enter">
+              <span class="pgate__arm"></span>
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+                MASUK KENDARAAN
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="map-legend">
+        <span><i style="background:#43D17F"></i>Empty</span>
+        <span><i style="background:#F0554E"></i>Full</span>
+        <span><i style="background:#E6B31E"></i>Inactive</span>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>

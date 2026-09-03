@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Saya — Wheel Spot</title>
+<link rel="icon" href="assets/LOGO_FIX%20copy2.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<div class="page page--app" id="dash">
+
+  <header class="topbar">
+    <div class="topbar__inner">
+      <a class="topbar__title" href="home.html">Dashboard Saya</a>
+      <span class="topbar__spacer"></span>
+      <a class="avatar" href="profile.html" aria-label="Profil saya">WS</a>
+    </div>
+  </header>
+
+  <main class="container stack gap-4" style="padding-top:20px">
+
+    <div class="segmented" role="tablist" aria-label="Status sesi (demo)">
+      <a href="dashboard.html?state=menuju"     role="tab">Menuju</a>
+      <a href="dashboard.html?state=verifikasi" role="tab">Verifikasi</a>
+      <a href="dashboard.html?state=valid"      role="tab">Terparkir</a>
+      <a href="dashboard.html?state=salah"      role="tab">Salah Slot</a>
+      <a href="dashboard.html?state=denda"      role="tab">Kena Denda</a>
+    </div>
+
+    <div class="split-2">
+      <!-- ================= LEFT ================= -->
+      <div class="stack gap-4">
+
+        <!-- session status card -->
+        <div class="card card--tint" data-state="menuju,verifikasi,valid,salah,denda">
+          <span class="badge info"        data-state="menuju">Menuju Slot</span>
+          <span class="badge neutral"     data-state="verifikasi">Memverifikasi Ulang…</span>
+          <span class="badge ok"          data-state="valid">Terparkir · Valid</span>
+          <span class="badge danger"      data-state="salah">Alarm — Salah Slot</span>
+          <span class="badge warn"        data-state="denda">Kena Denda — Alarm Nonaktif</span>
+
+          <h1 style="font-size:24px;margin-top:12px">Miko Mall — Slot A1</h1>
+
+          <div class="loc-meta mt-3" data-state="valid,salah,denda">
+            <span>Durasi Parkir<b data-timer="01:24:10">01:24:10</b></span>
+            <span>Estimasi Biaya<b>Rp 12.000</b></span>
+          </div>
+          <div class="loc-meta mt-3" data-state="menuju">
+            <span>Estimasi Sampai<b>3 menit</b></span>
+            <span>Jarak ke Slot<b>120 m</b></span>
+          </div>
+
+          <!-- QR -->
+          <div class="qr-block mt-4" data-state="valid">
+            <span class="qr"></span>
+            <div><p style="font-weight:700">QR Sesi Parkir</p><p class="tiny muted">Tunjukkan ke petugas jika diminta verifikasi ulang.</p></div>
+          </div>
+          <div class="qr-block mt-4" data-state="salah">
+            <span class="qr dim"></span>
+            <div><p style="font-weight:700">QR Tidak Berlaku</p><p class="tiny muted">Pindahkan mobil ke slot terdaftar untuk mengaktifkan kembali.</p></div>
+          </div>
+          <p class="small muted mt-3" data-state="verifikasi">Mohon tunggu sebentar…</p>
+        </div>
+
+        <!-- verifikasi note -->
+        <div class="alert" style="background:var(--line-soft);border-color:var(--line)" data-state="verifikasi">
+          <p class="alert__title" style="color:var(--ink-soft)">🔄 Mendeteksi Posisi Mobil</p>
+          <p class="alert__body">Kami sedang memastikan mobil kamu berada di slot yang benar. Ini biasanya cuma butuh beberapa detik.</p>
+        </div>
+
+        <!-- salah slot alert -->
+        <div class="alert danger" data-state="salah">
+          <p class="alert__title">⚠️ Slot Tidak Sesuai — Alarm Aktif</p>
+          <p class="alert__body">Mobil terdeteksi di slot berbeda dari QR kamu. Pindahkan dalam 5 menit untuk menghindari denda dan tarif per jam lebih mahal.</p>
+          <p style="font-weight:800;margin-top:8px">Sisa waktu: <span data-countdown>04:32</span></p>
+        </div>
+
+        <!-- denda alert -->
+        <div class="alert warn" data-state="denda">
+          <p class="alert__title">⏱️ Waktu Toleransi Habis</p>
+          <p class="alert__body">Kamu tidak memindahkan mobil dalam 5 menit. Alarm sudah dimatikan otomatis, tapi tarif per jam kamu sekarang lebih mahal sampai keluar gerbang.</p>
+          <p style="font-weight:800;margin-top:8px">Tarif berlaku: Rp 8.000/jam (naik dari Rp 5.000/jam)</p>
+        </div>
+
+        <!-- detail table -->
+        <div class="card" data-state="menuju,valid,salah,denda">
+          <p class="card-title" style="font-size:16px;margin-bottom:8px">Detail Sesi Parkir</p>
+          <div class="datalist">
+            <div><span class="k">Lokasi</span><span class="v">Parkiran Miko Mall</span></div>
+            <div><span class="k">Nomor Slot</span><span class="v">A1</span></div>
+            <div data-state="valid,salah,denda"><span class="k">Waktu Masuk</span><span class="v">24 Okt 2023, 13:06</span></div>
+            <div data-state="menuju"><span class="k">Waktu Booking</span><span class="v">24 Okt 2023, 13:06</span></div>
+            <div><span class="k">Kendaraan</span><span class="v">B 1234 SPOT</span></div>
+          </div>
+        </div>
+
+        <!-- actions -->
+        <a class="btn btn--lg btn--block" href="receipt.html" data-state="valid">Tap Kartu / Scan untuk Keluar →</a>
+        <a class="btn btn--lg btn--block" href="map.html" data-state="salah,denda">Lihat Rute ke Slot yang Benar →</a>
+        <div class="stack gap-2" data-state="menuju">
+          <a class="btn btn--lg btn--block" href="map.html">Lihat Rute ke Slot →</a>
+          <a class="linkbtn center" href="find.html" data-confirm="Batalkan booking slot A1?">Batalkan Booking</a>
+        </div>
+        <button class="btn btn--lg btn--block" disabled data-state="verifikasi">Menunggu Verifikasi…</button>
+      </div>
+
+      <!-- ================= RIGHT ================= -->
+      <aside>
+        <h2 class="section-title">Riwayat Terbaru</h2>
+        <div class="stack gap-3">
+          <a class="rowitem" href="receipt.html?state=success">
+            <span><span class="rowitem__t">Parkiran Ciwalk</span><br><span class="rowitem__s">23 Okt 2023 · 18:45</span></span>
+            <span class="small muted">Selesai</span>
+          </a>
+          <a class="rowitem" href="receipt.html">
+            <span><span class="rowitem__t">Parkiran Paskal</span><br><span class="rowitem__s">20 Okt 2023 · 09:15</span></span>
+            <span class="small" style="color:var(--danger);font-weight:700">Kena Denda</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <nav class="bottomnav" aria-label="Navigasi utama">
+    <div class="bottomnav__inner">
+      <a class="navitem" href="home.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/></svg>Home</a>
+      <a class="navitem" href="find.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Find</a>
+      <a class="navitem" href="news.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>News</a>
+      <a class="navitem" href="profile.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>Profile</a>
+    </div>
+  </nav>
+</div>
+<script src="assets/app.js"></script>
+</body>
+</html>
