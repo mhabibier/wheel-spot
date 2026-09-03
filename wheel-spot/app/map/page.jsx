@@ -4,87 +4,155 @@ import Link from 'next/link';
 import { TopBar } from '../components/Nav';
 import BottomNav from '../components/Nav';
 
+/* ── Zone definitions matching the reference screenshot ── */
 const ZONES = [
-  ['zTop',    9,   40,  null,       true ],
-  ['zLeft',   41,  48,  null,       false],
-  ['zRight',  1,   8,   'inactive', true ],
-  ['zRowA',   49,  86,  null,       false],
-  ['zRowB',   87,  120, null,       true ],
-  ['zBottom', 121, 150, null,       false],
+  ['zTop',    4,   36,  null,       true ],  // reversed → 36..4
+  ['zLeft',   40,  47,  null,       false],  // 40..47 top→bottom
+  ['zRight',  1,   8,   'inactive', true ],  // reversed → 8..1 top→bottom
+  ['zRowA',   93,  120, null,       false],  // 93..120 left→right
+  ['zRowB',   59,  86,  null,       true ],  // reversed → 86..59 left→right
+  ['zBottom', 48,  80,  null,       false],  // 48..80 left→right
 ];
 
 function pickKind() {
   const r = Math.random();
-  return r < 0.05 ? 'inactive' : r < 0.46 ? 'full' : 'empty';
+  return r < 0.05 ? 'inactive' : r < 0.42 ? 'full' : 'empty';
 }
 
 function buildSlots() {
   const all = [];
-  ZONES.forEach(([zoneId, from, to, forced, reversed]) => {
+  ZONES.forEach(([id, from, to, forced, rev]) => {
     const nums = [];
     for (let n = from; n <= to; n++) nums.push(n);
-    if (reversed) nums.reverse();
-    nums.forEach(n => all.push({ n, zoneId, kind: forced || pickKind() }));
+    if (rev) nums.reverse();
+    nums.forEach(n => all.push({ n, zoneId: id, kind: forced || pickKind() }));
   });
   return all;
 }
 
-const STAR_SVG = (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="14" height="14">
-    <path d="M12 5v14M6 13l6 6 6-6"/>
-  </svg>
-);
+/* ── Colours ── */
+const WALL   = '#1B5E3B';
+const FLOOR  = '#151A24';
+const ROAD   = '#1C2230';
 
+/* ── Slot button ── */
+function Slot({ slot, sel, dim, onSelect }) {
+  const bg = slot.kind === 'empty' ? '#2ECC71' : slot.kind === 'full' ? '#E74C3C' : '#F0A500';
+  const fg = slot.kind === 'full' ? '#fff' : '#000';
+  return (
+    <button
+      type="button"
+      onClick={() => onSelect(slot)}
+      style={{
+        width: 26, height: 32, borderRadius: 5, border: 'none', cursor: dim ? 'default' : 'pointer',
+        background: bg, color: fg, fontSize: 8, fontWeight: 800,
+        display: 'grid', placeItems: 'end center', paddingBottom: 2,
+        outline: sel ? '2.5px solid #fff' : '2px solid transparent',
+        outlineOffset: 1,
+        opacity: dim ? 0.15 : 1,
+        transform: sel ? 'translateY(-2px)' : undefined,
+        transition: 'transform .1s, opacity .1s',
+        pointerEvents: dim ? 'none' : 'auto',
+      }}
+      aria-label={`Slot ${slot.n}`}
+    >{slot.n}</button>
+  );
+}
+
+/* ── Arrows ── */
+function Arrows({ dir, count = 3 }) {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '8px 80px' }}>
+      {Array.from({ length: count }).map((_, i) => (
+        <span key={i} style={{ color: '#8899BB', fontSize: 20, fontWeight: 700, userSelect: 'none' }}>
+          {dir === 'left' ? '←' : '→'}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/* ── Door card ── */
+function DoorCard({ label, side, icon }) {
+  return (
+    <div style={{
+      background: '#0F1A14', border: `2px solid ${WALL}`,
+      borderRadius: 6, padding: '5px 10px', fontSize: 10,
+      fontWeight: 800, color: '#C8E6C9', whiteSpace: 'nowrap',
+      display: 'flex', flexDirection: 'column', alignItems: side === 'left' ? 'flex-start' : 'flex-end',
+      gap: 2, minWidth: 72,
+    }}>
+      {icon}
+      <span style={{ fontSize: 9, lineHeight: 1.2 }}>{label}</span>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════ */
 export default function MapPage() {
-  const [allSlots]  = useState(buildSlots);
-  const [filter, setFilter]     = useState('all');
-  const [search, setSearch]     = useState('');
+  const [allSlots] = useState(buildSlots);
+  const [filter, setFilter] = useState('all');
+  const [search, setSearch] = useState('');
   const [selected, setSelected] = useState(null);
-  const [zoom, setZoom]         = useState(1);
-  const [autoFit, setAutoFit]   = useState(true);
+  const [zoom, setZoom] = useState(1);
+  const [autoFit, setAutoFit] = useState(true);
 
   const vpRef   = useRef(null);
-  const pmapRef = useRef(null);
+  const planRef = useRef(null);
 
-  const slotsByZone = {};
-  ZONES.forEach(([id]) => (slotsByZone[id] = []));
-  allSlots.forEach(s => slotsByZone[s.zoneId]?.push(s));
+  /* group by zone */
+  const byZone = {};
+  ZONES.forEach(([id]) => (byZone[id] = []));
+  allSlots.forEach(s => byZone[s.zoneId]?.push(s));
 
-  const isDimmed = useCallback(slot => {
-    if (search) return String(slot.n) !== search;
-    if (filter === 'all')        return false;
-    if (filter === 'available')  return slot.kind !== 'empty';
-    if (filter === 'occupied')   return slot.kind !== 'full';
-    if (filter === 'ev')         return !(slot.kind === 'empty' && slot.n % 7 === 0);
-    if (filter === 'accessible') return !(slot.kind === 'empty' && slot.n % 11 === 0);
+  const isDim = useCallback(s => {
+    if (search) return String(s.n) !== search;
+    if (filter === 'available')  return s.kind !== 'empty';
+    if (filter === 'occupied')   return s.kind !== 'full';
+    if (filter === 'ev')         return !(s.kind === 'empty' && s.n % 7 === 0);
+    if (filter === 'accessible') return !(s.kind === 'empty' && s.n % 11 === 0);
     return false;
   }, [filter, search]);
 
+  /* zoom */
   const applyZoom = useCallback(v => {
-    const z = Math.min(2.6, Math.max(0.3, Math.round(v * 100) / 100));
+    const z = Math.min(3, Math.max(0.3, +v.toFixed(2)));
     setZoom(z);
-    if (pmapRef.current) pmapRef.current.style.zoom = z;
+    if (planRef.current) planRef.current.style.zoom = z;
   }, []);
 
   const fitToWidth = useCallback(() => {
-    if (!vpRef.current || !pmapRef.current) return;
-    const fit = (vpRef.current.clientWidth - 8) / pmapRef.current.offsetWidth;
-    applyZoom(fit < 1 ? fit : 1);
+    if (!vpRef.current || !planRef.current) return;
+    const ratio = (vpRef.current.clientWidth - 16) / planRef.current.offsetWidth;
+    applyZoom(ratio < 1 ? ratio : 1);
   }, [applyZoom]);
 
   useEffect(() => {
     requestAnimationFrame(fitToWidth);
-    const onResize = () => { if (autoFit) fitToWidth(); };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
+    const h = () => { if (autoFit) fitToWidth(); };
+    window.addEventListener('resize', h);
+    return () => window.removeEventListener('resize', h);
   }, [fitToWidth, autoFit]);
 
-  /* drag-to-pan */
-  const drag = useRef({ on: false, sx: 0, sy: 0, l: 0, t: 0 });
+  /* wheel zoom */
+  const onWheel = useCallback(e => {
+    if (!e.ctrlKey) return;
+    e.preventDefault();
+    setAutoFit(false);
+    applyZoom(zoom - Math.sign(e.deltaY) * 0.15);
+  }, [zoom, applyZoom]);
+  useEffect(() => {
+    const el = vpRef.current; if (!el) return;
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => el.removeEventListener('wheel', onWheel);
+  }, [onWheel]);
+
+  /* drag */
+  const drag = useRef({ on: false });
   const onPD = e => {
-    if (e.target.closest('.pslot')) return;
+    if (e.target.closest('button[aria-label]')) return;
     drag.current = { on: true, sx: e.clientX, sy: e.clientY, l: vpRef.current.scrollLeft, t: vpRef.current.scrollTop };
-    vpRef.current.classList.add('grabbing');
+    vpRef.current.style.cursor = 'grabbing';
     vpRef.current.setPointerCapture(e.pointerId);
   };
   const onPM = e => {
@@ -92,55 +160,31 @@ export default function MapPage() {
     vpRef.current.scrollLeft = drag.current.l - (e.clientX - drag.current.sx);
     vpRef.current.scrollTop  = drag.current.t  - (e.clientY - drag.current.sy);
   };
-  const endDrag = () => { drag.current.on = false; vpRef.current?.classList.remove('grabbing'); };
-
-  const onWheel = useCallback(e => {
-    if (!e.ctrlKey) return;
-    e.preventDefault();
-    setAutoFit(false);
-    applyZoom(zoom - Math.sign(e.deltaY) * 0.15);
-  }, [zoom, applyZoom]);
-
-  useEffect(() => {
-    const el = vpRef.current;
-    if (!el) return;
-    el.addEventListener('wheel', onWheel, { passive: false });
-    return () => el.removeEventListener('wheel', onWheel);
-  }, [onWheel]);
+  const endDrag = () => { drag.current.on = false; if (vpRef.current) vpRef.current.style.cursor = 'grab'; };
 
   const avail = allSlots.filter(s => s.kind === 'empty').length;
   const inact = allSlots.filter(s => s.kind === 'inactive').length;
   const occ   = allSlots.length - avail - inact;
 
   const renderZone = id =>
-    (slotsByZone[id] || []).map(slot => (
-      <button
-        key={slot.n}
-        type="button"
-        className={[
-          'pslot', slot.kind,
-          selected?.n === slot.n ? 'sel' : '',
-          isDimmed(slot) ? 'dim' : '',
-        ].join(' ')}
-        aria-label={`Slot ${slot.n}`}
-        onClick={() => { setSelected(slot); setSearch(''); }}
-      >
-        {slot.n}
-      </button>
+    (byZone[id] || []).map(s => (
+      <Slot key={s.n} slot={s} sel={selected?.n === s.n} dim={isDim(s)}
+        onSelect={sl => { setSelected(sl); setSearch(''); }} />
     ));
 
-  const ArrowRow = ({ dir, count = 3 }) => (
-    <div style={{ display: 'flex', justifyContent: 'space-around', padding: '6px 60px' }}>
-      {Array.from({ length: count }).map((_, i) => (
-        <span key={i} style={{ color: '#F4F6F8', fontSize: 18, fontWeight: 700, letterSpacing: 2 }}>
-          {dir === 'left' ? '←' : '→'}
-        </span>
-      ))}
-    </div>
-  );
+  const FILTERS = [
+    ['all','All Spots'], ['available','Available'],
+    ['occupied','Occupied'], ['ev','EV Charging'], ['accessible','Accessible']
+  ];
 
-  const FILTERS = ['all','available','occupied','ev','accessible'];
-  const FILTER_LABELS = { all:'All Spots', available:'Available', occupied:'Occupied', ev:'EV Charging', accessible:'Accessible' };
+  /* ── Zoom bar button ── */
+  const ZBtn = ({ onClick, children }) => (
+    <button type="button" onClick={onClick} style={{
+      width: 30, height: 30, border: 'none', background: '#fff', cursor: 'pointer',
+      display: 'grid', placeItems: 'center', fontSize: 14, color: '#14171F',
+      borderBottom: '1px solid #E7E8EC',
+    }}>{children}</button>
+  );
 
   return (
     <div className="page page--app">
@@ -148,188 +192,243 @@ export default function MapPage() {
 
       <main className="container stack gap-4" style={{ paddingTop: 20 }}>
 
-        {/* Search + filters */}
-        <div className="hero" style={{ padding: 22 }}>
-          <h1 style={{ fontSize: 22 }}>Live Parking Map</h1>
-          <p className="muted small mt-2">Level B1 · Main Facility</p>
-          <input
-            className="input mt-3"
-            placeholder="🔍 Cari nomor slot…"
-            inputMode="numeric"
-            value={search}
-            onChange={e => setSearch(e.target.value.replace(/\D/g, ''))}
-          />
-          <p className="overline mt-4">Filters</p>
-          <div className="filter-chips mt-2">
-            {FILTERS.map(f => (
-              <button key={f} className={filter === f ? 'on' : ''} onClick={() => { setFilter(f); setSearch(''); }}>
-                {FILTER_LABELS[f]}
-              </button>
-            ))}
+        {/* ── Controls ── */}
+        <div className="hero" style={{ padding: '18px 22px' }}>
+          <h1 style={{ fontSize: 20 }}>Live Parking Map — Level B1</h1>
+          <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 14, alignItems: 'center' }}>
+            <input className="input" style={{ maxWidth: 220, marginTop: 0 }}
+              placeholder="🔍 Cari nomor slot…" inputMode="numeric"
+              value={search} onChange={e => setSearch(e.target.value.replace(/\D/g, ''))} />
+            <div className="filter-chips">
+              {FILTERS.map(([id, lbl]) => (
+                <button key={id} className={filter === id ? 'on' : ''}
+                  onClick={() => { setFilter(id); setSearch(''); }}>{lbl}</button>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="card card--tint" style={{ display:'flex', justifyContent:'space-around', textAlign:'center' }}>
-          <div><p style={{ fontSize:26, fontWeight:800, color:'var(--ok)' }}>{avail}</p><p className="overline">Available</p></div>
-          <div><p style={{ fontSize:26, fontWeight:800, color:'var(--red)' }}>{occ}</p><p className="overline">Occupied</p></div>
+        {/* ── Stats ── */}
+        <div style={{ display: 'flex', gap: 12 }}>
+          {[
+            { label: 'Available', val: avail, color: '#2ECC71' },
+            { label: 'Occupied',  val: occ,   color: '#E74C3C' },
+            { label: 'Inactive',  val: inact,  color: '#F0A500' },
+            { label: 'Total',     val: allSlots.length, color: '#fff' },
+          ].map(s => (
+            <div key={s.label} className="card" style={{ flex: 1, textAlign: 'center', padding: '14px 10px' }}>
+              <div style={{ fontSize: 24, fontWeight: 800, color: s.color }}>{s.val}</div>
+              <div style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 600, marginTop: 4 }}>{s.label}</div>
+            </div>
+          ))}
         </div>
 
-        {/* Slot info card */}
-        <div className="card" style={{ borderColor:'var(--red-tint-2)' }}>
-          {selected ? (
-            <>
-              <p style={{ fontWeight:800 }}>Slot {selected.n}</p>
-              <p className="mt-2">
-                <span className={`badge ${selected.kind === 'empty' ? 'ok' : selected.kind === 'full' ? 'danger' : 'warn'}`}>
-                  {selected.kind === 'empty' ? 'Available' : selected.kind === 'full' ? 'Occupied' : 'Inactive'}
-                </span>
-              </p>
-              <p className="small muted mt-2">
-                {selected.kind === 'empty' ? 'Slot bisa dibooking sekarang.' : selected.kind === 'full' ? 'Slot sedang terisi.' : 'Sedang maintenance.'}
-              </p>
-              {selected.kind === 'empty' && (
-                <Link className="btn btn--block mt-3" href="/dashboard">Booking Slot Ini →</Link>
-              )}
-            </>
-          ) : (
-            <p className="muted small">Klik slot pada denah untuk melihat detail.</p>
-          )}
-        </div>
+        {/* ── Selected slot info ── */}
+        {selected && (
+          <div className="card" style={{ borderColor: 'var(--red-tint-2)', display: 'flex', alignItems: 'center', gap: 16 }}>
+            <div>
+              <p style={{ fontWeight: 800, fontSize: 15 }}>Slot {selected.n}</p>
+              <span className={`badge ${selected.kind === 'empty' ? 'ok' : selected.kind === 'full' ? 'danger' : 'warn'}`}
+                style={{ marginTop: 6 }}>
+                {selected.kind === 'empty' ? 'Available' : selected.kind === 'full' ? 'Occupied' : 'Inactive'}
+              </span>
+            </div>
+            {selected.kind === 'empty' && (
+              <Link className="btn" style={{ marginLeft: 'auto' }} href="/dashboard">Booking →</Link>
+            )}
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', fontSize: 18 }}
+              onClick={() => setSelected(null)}>✕</button>
+          </div>
+        )}
 
-        {/* ===== FLOOR PLAN ===== */}
-        <div className="pmap-wrap">
+        {/* ══ FLOOR PLAN ══ */}
+        <div style={{ position: 'relative' }}>
+
           {/* Zoom bar */}
-          <div className="zoombar">
-            <button type="button" onClick={() => { setAutoFit(false); applyZoom(zoom + 0.2); }}>+</button>
-            <button type="button" onClick={() => { setAutoFit(false); applyZoom(zoom - 0.2); }}>−</button>
-            <button type="button" onClick={() => { setAutoFit(true); fitToWidth(); vpRef.current?.scrollTo({ left:0, top:0, behavior:'smooth' }); }}>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="3.5"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
+          <div style={{
+            position: 'absolute', top: 14, right: 14, zIndex: 10,
+            display: 'flex', flexDirection: 'column',
+            background: '#fff', borderRadius: 8,
+            boxShadow: '0 4px 12px rgba(0,0,0,.15)', overflow: 'hidden',
+          }}>
+            <ZBtn onClick={() => { setAutoFit(false); applyZoom(zoom + 0.15); }}>+</ZBtn>
+            <ZBtn onClick={() => { setAutoFit(false); applyZoom(zoom - 0.15); }}>−</ZBtn>
+            <ZBtn onClick={() => { setAutoFit(true); fitToWidth(); vpRef.current?.scrollTo({ left:0,top:0,behavior:'smooth'}); }}>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/>
               </svg>
-            </button>
+            </ZBtn>
           </div>
-          <span className="zoom-hint">Ctrl+scroll untuk zoom · drag untuk geser</span>
 
-          <div
-            className="pmap-viewport"
-            ref={vpRef}
-            onPointerDown={onPD}
-            onPointerMove={onPM}
-            onPointerUp={endDrag}
-            onPointerCancel={endDrag}
+          {/* Viewport */}
+          <div ref={vpRef} style={{
+            overflow: 'auto', background: '#0C1018',
+            border: '1px solid #222A38', borderRadius: 12,
+            maxHeight: '72vh', cursor: 'grab',
+          }}
+            onPointerDown={onPD} onPointerMove={onPM}
+            onPointerUp={endDrag} onPointerCancel={endDrag}
           >
-            {/* ---- THE PLAN ---- */}
-            <div ref={pmapRef} style={{
-              width: 1380,
-              background: '#12141C',
-              margin: 0,
-              padding: '16px 20px',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 0,
-              color: '#fff',
-              borderRadius: 10,
-            }}>
 
-              {/* TOP WALL — green line + door labels */}
-              <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', borderBottom:'3px solid #1A8C4E', paddingBottom:8, marginBottom:10 }}>
-                <span style={{
-                  background:'#0E1016', border:'1px solid #414757', borderRadius:6,
-                  padding:'6px 10px', fontSize:10, fontWeight:800, color:'#D6DAE2',
-                  display:'flex', alignItems:'center', gap:6,
-                }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M14 21V4H6v17M14 8h4v13M10 12h.01"/>
-                  </svg>
-                  Pintu masuk mall
-                </span>
-                <span style={{
-                  background:'#0E1016', border:'1px solid #414757', borderRadius:6,
-                  padding:'6px 10px', fontSize:10, fontWeight:800, color:'#D6DAE2',
-                  display:'flex', alignItems:'center', gap:6,
-                }}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M10 21V4h8v17M10 8H6v13M14 12h-.01"/>
-                  </svg>
-                  Pintu keluar mall
-                </span>
-              </div>
+            {/* ══ ARENA ══ */}
+            <div ref={planRef} style={{ display: 'inline-block', padding: 16 }}>
+              <div style={{
+                background: FLOOR,
+                borderLeft:   `4px solid ${WALL}`,
+                borderRight:  `4px solid ${WALL}`,
+                borderBottom: `4px solid ${WALL}`,
+                borderRadius: '0 0 10px 10px',
+                minWidth: 1300,
+              }}>
 
-              {/* TOP ROW of slots */}
-              <div style={{ display:'flex', justifyContent:'center', gap:4, paddingLeft:50, paddingRight:50 }}>
-                {renderZone('zTop')}
-              </div>
+                {/* ── TOP WALL with door cards ── */}
+                <div style={{ display: 'flex', alignItems: 'center', borderTop: `4px solid ${WALL}` }}>
 
-              {/* Arrow row ← */}
-              <ArrowRow dir="left" count={3} />
-
-              {/* MIDDLE: left col | center rows | right col */}
-              <div style={{ display:'flex', alignItems:'center', gap:8, paddingLeft:4, paddingRight:4 }}>
-
-                {/* Left vertical column */}
-                <div style={{ display:'flex', flexDirection:'column', gap:4, flexShrink:0 }}>
-                  {renderZone('zLeft')}
-                </div>
-
-                {/* Center: Row A + yellow strip + Row B */}
-                <div style={{ flex:1, display:'flex', flexDirection:'column', gap:4 }}>
-                  <div style={{ display:'flex', gap:4, justifyContent:'center' }}>
-                    {renderZone('zRowA')}
+                  {/* Pintu Masuk */}
+                  <div style={{
+                    background: '#0A1A0F', border: `2px solid ${WALL}`,
+                    borderTop: 'none', borderLeft: 'none',
+                    borderRadius: '0 0 8px 0',
+                    padding: '8px 14px', minWidth: 90,
+                    display: 'flex', flexDirection: 'column', gap: 4,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#4CAF50" strokeWidth="2" strokeLinecap="round">
+                        <path d="M14 21V4H6v17M14 8h4v13M10 12h.01"/>
+                      </svg>
+                      <span style={{ fontSize: 9, fontWeight: 800, color: '#81C784', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Pintu Masuk
+                      </span>
+                    </div>
+                    <span style={{ fontSize: 8, color: '#4CAF50', fontWeight: 700 }}>Mall ↗</span>
                   </div>
-                  {/* Yellow island strip */}
-                  <div style={{ height:10, background:'#E6B31E', borderRadius:3, margin:'2px 0' }}/>
-                  <div style={{ display:'flex', gap:4, justifyContent:'center' }}>
-                    {renderZone('zRowB')}
+
+                  {/* Middle wall segment */}
+                  <div style={{ flex: 1, height: 4, background: WALL, marginTop: -4 }} />
+
+                  {/* Pintu Keluar */}
+                  <div style={{
+                    background: '#1A0A0A', border: `2px solid ${WALL}`,
+                    borderTop: 'none', borderRight: 'none',
+                    borderRadius: '0 0 0 8px',
+                    padding: '8px 14px', minWidth: 90,
+                    display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4,
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                      <span style={{ fontSize: 9, fontWeight: 800, color: '#EF9A9A', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                        Pintu Keluar
+                      </span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#EF5350" strokeWidth="2" strokeLinecap="round">
+                        <path d="M10 21V4h8v17M10 8H6v13M14 12h-.01"/>
+                      </svg>
+                    </div>
+                    <span style={{ fontSize: 8, color: '#EF5350', fontWeight: 700 }}>↗ Mall</span>
                   </div>
                 </div>
 
-                {/* Right vertical column */}
-                <div style={{ display:'flex', flexDirection:'column', gap:4, flexShrink:0 }}>
-                  {renderZone('zRight')}
-                </div>
-              </div>
+                {/* ── Padding inside ── */}
+                <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 0 }}>
 
-              {/* Arrow row → */}
-              <ArrowRow dir="right" count={2} />
+                  {/* TOP ROW slots */}
+                  <div style={{ background: ROAD, borderRadius: 6, padding: '10px 8px', display: 'flex', gap: 4, flexWrap: 'nowrap', justifyContent: 'center' }}>
+                    {renderZone('zTop')}
+                  </div>
 
-              {/* BOTTOM ROW of slots */}
-              <div style={{ display:'flex', justifyContent:'center', gap:4, paddingLeft:50, paddingRight:50 }}>
-                {renderZone('zBottom')}
-              </div>
+                  {/* Road + arrows ← */}
+                  <Arrows dir="left" count={3} />
 
-              {/* BOTTOM WALL — green line + gates */}
-              <div style={{ marginTop:10, borderTop:'3px solid #1A8C4E', paddingTop:8, display:'flex', justifyContent:'space-between', alignItems:'center', paddingLeft:10, paddingRight:10 }}>
-                {/* Exit gate */}
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-                  <div style={{ width:80, height:7, borderRadius:3, background:'repeating-linear-gradient(90deg,#F0554E 0 11px,#F4F4F4 11px 22px)' }}/>
-                  <span style={{ color:'#FF6A63', fontSize:10, fontWeight:800, display:'flex', alignItems:'center', gap:4 }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 5v14M6 13l6 6 6-6"/>
-                    </svg>
-                    KELUAR
+                  {/* MIDDLE SECTION */}
+                  <div style={{ display: 'flex', gap: 8, alignItems: 'stretch' }}>
+
+                    {/* Left vertical column */}
+                    <div style={{
+                      background: ROAD, borderRadius: 6,
+                      padding: '8px 6px', display: 'flex', flexDirection: 'column', gap: 4,
+                      flexShrink: 0, justifyContent: 'center',
+                    }}>
+                      {renderZone('zLeft')}
+                    </div>
+
+                    {/* Center: Row A + yellow strip + Row B */}
+                    <div style={{ flex: 1, background: ROAD, borderRadius: 6, padding: '10px 8px', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                      <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                        {renderZone('zRowA')}
+                      </div>
+                      {/* Yellow island */}
+                      <div style={{ height: 10, background: '#E6B31E', borderRadius: 3, margin: '4px 0' }} />
+                      <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+                        {renderZone('zRowB')}
+                      </div>
+                    </div>
+
+                    {/* Right vertical column */}
+                    <div style={{
+                      background: ROAD, borderRadius: 6,
+                      padding: '8px 6px', display: 'flex', flexDirection: 'column', gap: 4,
+                      flexShrink: 0, justifyContent: 'center',
+                    }}>
+                      {renderZone('zRight')}
+                    </div>
+                  </div>
+
+                  {/* Road + arrows → */}
+                  <Arrows dir="right" count={2} />
+
+                  {/* BOTTOM ROW slots */}
+                  <div style={{ background: ROAD, borderRadius: 6, padding: '10px 8px', display: 'flex', gap: 4, flexWrap: 'nowrap', justifyContent: 'center' }}>
+                    {renderZone('zBottom')}
+                  </div>
+
+                </div>{/* /inner padding */}
+
+                {/* ── BOTTOM WALL ── */}
+                <div style={{ borderTop: `4px solid ${WALL}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 24px' }}>
+
+                  {/* KELUAR gate */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{ width: 90, height: 7, borderRadius: 3, background: 'repeating-linear-gradient(90deg,#E74C3C 0 12px,#ccc 12px 24px)' }} />
+                    <span style={{ color: '#E74C3C', fontSize: 11, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 5v14M6 13l6 6 6-6"/>
+                      </svg>
+                      KELUAR
+                    </span>
+                  </div>
+
+                  {/* Center label */}
+                  <span style={{ color: '#4A5568', fontSize: 10, fontWeight: 600, letterSpacing: '0.08em' }}>
+                    JALUR KENDARAAN
                   </span>
-                </div>
-                {/* Enter gate */}
-                <div style={{ display:'flex', flexDirection:'column', alignItems:'center', gap:4 }}>
-                  <div style={{ width:80, height:7, borderRadius:3, background:'repeating-linear-gradient(90deg,#38D67A 0 11px,#F4F4F4 11px 22px)' }}/>
-                  <span style={{ color:'#38D67A', fontSize:10, fontWeight:800, display:'flex', alignItems:'center', gap:4 }}>
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M12 19V5M6 11l6-6 6 6"/>
-                    </svg>
-                    MASUK
-                  </span>
-                </div>
-              </div>
 
+                  {/* MASUK gate */}
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+                    <div style={{ width: 90, height: 7, borderRadius: 3, background: 'repeating-linear-gradient(90deg,#2ECC71 0 12px,#ccc 12px 24px)' }} />
+                    <span style={{ color: '#2ECC71', fontSize: 11, fontWeight: 800, display: 'flex', alignItems: 'center', gap: 4 }}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 19V5M6 11l6-6 6 6"/>
+                      </svg>
+                      MASUK
+                    </span>
+                  </div>
+                </div>
+
+              </div>{/* /arena */}
             </div>{/* /plan */}
           </div>{/* /viewport */}
 
+          {/* Hint */}
+          <p style={{ fontSize: 11, color: '#4A5568', marginTop: 8, paddingLeft: 4 }}>
+            Ctrl + scroll untuk zoom &nbsp;·&nbsp; drag untuk geser &nbsp;·&nbsp; klik slot untuk detail
+          </p>
+
           {/* Legend */}
-          <div className="map-legend">
-            <span><i style={{ background:'#43D17F' }}/> Empty</span>
-            <span><i style={{ background:'#F0554E' }}/> Full</span>
-            <span><i style={{ background:'#E6B31E' }}/> Inactive</span>
+          <div style={{ display: 'flex', gap: 20, marginTop: 10, fontSize: 12, color: 'var(--muted)' }}>
+            {[['#2ECC71','Empty'],['#E74C3C','Full'],['#F0A500','Inactive']].map(([c,l]) => (
+              <span key={l} style={{ display:'flex', alignItems:'center', gap:6 }}>
+                <i style={{ width:12,height:12,borderRadius:3,background:c,display:'inline-block' }}/>
+                {l}
+              </span>
+            ))}
           </div>
         </div>
 
