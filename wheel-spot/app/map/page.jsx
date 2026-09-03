@@ -36,7 +36,7 @@ function buildSlots(seed = 0) {
 }
 
 const FLOOR_BG = '#151A24';
-const ROAD_BG  = '#1C2230';
+const ROAD_BG  = '#151A24'; /* same as FLOOR — no color difference inside arena */
 
 /* ── Slot button ── */
 function Slot({ slot, sel, dim, onSelect }) {
@@ -320,65 +320,47 @@ export default function MapPage() {
                 <div style={{ padding: '8px 14px 0', display: 'flex', flexDirection: 'column', gap: 0 }}>
 
                   {/* TOP ROW */}
-                  <div style={{
-                    background: ROAD_BG, borderRadius: 6,
-                    padding: '10px 8px', display: 'flex', gap: 4, justifyContent: 'center',
-                  }}>
+                  <div style={{ padding: '10px 8px', display: 'flex', gap: 4, justifyContent: 'center' }}>
                     {renderZone('zTop')}
                   </div>
 
                   {/* Arrows ← */}
                   <Arrows dir="left" count={3} />
 
-                  {/* MIDDLE SECTION: [Left col] [road] [island: RowA+wall+RowB] [road] [Right col] */}
-                  <div style={{ display: 'flex', alignItems: 'stretch', background: ROAD_BG, borderRadius: 6 }}>
+                  {/* MIDDLE SECTION: [Left col] [road] [island] [road] [Right col] */}
+                  <div style={{ display: 'flex', alignItems: 'flex-start' }}>
 
-                    {/* Left column slots */}
-                    <div style={{
-                      padding: '8px 6px', display: 'flex', flexDirection: 'column',
-                      gap: 4, flexShrink: 0, justifyContent: 'flex-start',
-                    }}>
+                    {/* Left column */}
+                    <div style={{ padding: '6px 6px', display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
                       {renderZone('zLeft')}
                     </div>
 
-                    {/* Left road lane (circular traffic flows here, up/down) */}
-                    <div style={{ flex: '0 0 52px' }} />
+                    {/* Left road lane */}
+                    <div style={{ flex: '0 0 48px' }} />
 
-                    {/* CENTER ISLAND: Row A + yellow wall + Row B */}
-                    {/* Yellow only spans the island width, NOT the road lanes */}
-                    <div style={{
-                      flex: 1, display: 'flex', flexDirection: 'column',
-                      justifyContent: 'flex-start', padding: '10px 0',
-                    }}>
-                      {/* Row A */}
-                      <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-                        {renderZone('zRowA')}
+                    {/* CENTER ISLAND — wrapped in fit-content so yellow matches slot width exactly */}
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', padding: '6px 0' }}>
+                      <div> {/* fit-content naturally — yellow will match this width */}
+                        {/* Row A */}
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          {renderZone('zRowA')}
+                        </div>
+
+                        {/* Yellow wall — EXACTLY as wide as the slot rows */}
+                        <div style={{ height: 11, background: '#E6B31E', borderRadius: 2, margin: '5px 0' }} />
+
+                        {/* Row B */}
+                        <div style={{ display: 'flex', gap: 4 }}>
+                          {renderZone('zRowB')}
+                        </div>
                       </div>
-
-                      {/* Yellow center WALL — only spans island, road on left/right is open */}
-                      <div style={{
-                        height: 12, background: '#E6B31E', borderRadius: 2,
-                        margin: '6px 0', flexShrink: 0,
-                        /* No negative margin — stays within island bounds */
-                      }} />
-
-                      {/* Row B */}
-                      <div style={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-                        {renderZone('zRowB')}
-                      </div>
-
-                      {/* Road space below island for circular loop bottom */}
-                      <div style={{ flex: 1, minHeight: 60 }} />
                     </div>
 
                     {/* Right road lane */}
-                    <div style={{ flex: '0 0 52px' }} />
+                    <div style={{ flex: '0 0 48px' }} />
 
-                    {/* Right column slots */}
-                    <div style={{
-                      padding: '8px 6px', display: 'flex', flexDirection: 'column',
-                      gap: 4, flexShrink: 0, justifyContent: 'flex-start',
-                    }}>
+                    {/* Right column */}
+                    <div style={{ padding: '6px 6px', display: 'flex', flexDirection: 'column', gap: 4, flexShrink: 0 }}>
                       {renderZone('zRight')}
                     </div>
                   </div>
@@ -387,10 +369,7 @@ export default function MapPage() {
                   <Arrows dir="right" count={2} />
 
                   {/* BOTTOM ROW */}
-                  <div style={{
-                    background: ROAD_BG, borderRadius: 6,
-                    padding: '10px 8px', display: 'flex', gap: 4, justifyContent: 'center',
-                  }}>
+                  <div style={{ padding: '6px 8px 10px', display: 'flex', gap: 4, justifyContent: 'center' }}>
                     {renderZone('zBottom')}
                   </div>
 
